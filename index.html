@@ -1,4 +1,18 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>九九そだて</title><link rel="stylesheet" href="./style.css?v=1"></head><body><div class="app"><header><div><div class="brand">九九そだて</div><div class="sub">忘れる前に、ちょっとだけ。</div></div><span class="pill">🪙 <b id="coins">0</b></span></header>
+<!doctype html><html lang="ja"><head><meta charset="utf-8">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NBJ7466KDJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-NBJ7466KDJ', {
+    allow_google_signals: false,
+    allow_ad_personalization_signals: false
+  });
+</script>
+
+<meta name="google-site-verification" content="HdcqxspYBm1QXcBinrWtrPvj-GFAcDOGZ2AdJdyeljo" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>九九そだて</title><link rel="stylesheet" href="./style.css?v=1"></head><body><div class="app"><header><div><div class="brand">九九そだて</div><div class="sub">忘れる前に、ちょっとだけ。</div></div><span class="pill">🪙 <b id="coins">0</b></span></header>
 <section id="home" class="screen active"><div class="hero"><div class="petwrap"><div class="pet"><span class="badge" id="stage">たまご</span><div id="petvis"></div></div><div class="grow"><div class="h1" id="petname">ポコ</div><div class="sub" id="petmsg"></div><div class="bar"><div id="xpbar"></div></div><div class="tiny" id="xptext"></div></div></div></div><div class="grid"><div class="card"><div class="label">今日の復習</div><div class="big"><span id="due">0</span>問</div><div class="tiny" id="nextdue"></div></div><div class="card"><div class="label">連続学習</div><div class="big"><span id="streak">0</span>日</div><div class="tiny">1日1回でOK</div></div></div><div class="section">今日やること</div><div class="stack"><button id="challengeHome" class="cta" onclick="startChallenge()">⏱ 1分チャレンジ</button><button class="cta green" onclick="openReview()">🧠 今日の復習をする</button><button class="cta white" onclick="show('learn')">📘 新しい段をおぼえる</button></div><div class="section">今日のごほうび</div><div class="card">🎁 今日の復習を全部終えると育成アイテムGET</div></section>
 <section id="learn" class="screen"><div class="section">段をえらぶ</div><div class="dan" id="dangrid"></div><div id="learnbox" style="display:none;margin-top:14px" class="qbox"><div class="tiny" id="learnlabel"></div><div class="question" id="learnq"></div><div class="ansrow"><input id="learna" class="answer" inputmode="numeric"><button class="cta" style="width:auto" onclick="submitLearn()">答える</button></div><div id="learnfb" class="feedback"></div><div class="tiny">正誤と回答速度から、次の復習日時を自動計算します。</div></div></section>
 <section id="review" class="screen"><div class="section">今日の復習 <span class="tiny" id="reviewprog"></span></div><div class="qbox"><div class="tiny" id="reviewlevel"></div><div class="question" id="reviewq"></div><div class="ansrow"><input id="reviewa" class="answer" inputmode="numeric"><button class="cta green" style="width:auto" onclick="submitReview()">答える</button></div><div id="reviewfb" class="feedback"></div><div class="tiny" id="reviewsched"></div></div></section>
