@@ -40,23 +40,73 @@
   return s;
  }
  function pack(raw){return {app:'kuku-sodate',version:1,key:KEY,createdAt:new Date().toISOString(),data:validate(JSON.parse(raw))};}
- function download(raw){const url=URL.createObjectURL(new Blob([JSON.stringify(pack(raw),null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='kuku-backup-'+Date.now()+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
  const $=id=>document.getElementById(id), message=s=>{$('message').textContent=s;};
- let pending=null,existing=null,backedUp=false;
- $('export').onclick=()=>{try{const raw=localStorage.getItem(KEY);if(raw===null)throw Error('このブラウザには九九の記録がありません。旧サイトで使ったブラウザ・通常/ホーム追加の起動方法を確認してください。');download(raw);backedUp=true;message('保存操作を開始しました。ファイルが保存できたことを確認してください。');}catch(e){message(e.message);}};
+ const bytes=s=>new TextEncoder().encode(s).length;
+ const storageMessage=e=>e.name==='SecurityError'?'この画面では記録の保存領域を利用できません。元の記録は削除せず、以前使っていたブラウザ・起動方法で開いてください。':e.message;
+ let pending=null,existing=null,backedUpRaw=null,textSnapshot=null;
+ function snapshot(){
+  const raw=localStorage.getItem(KEY);
+  if(raw===null)throw Error('この画面には九九の記録がありません。以前使っていた端末・ブラウザ・プロファイルと、通常/ホーム画面の起動方法を確認してください。');
+  if(bytes(raw)>MAX)fail();
+  return {raw,text:JSON.stringify(pack(raw),null,2),name:'kuku-backup-'+Date.now()+'.json'};
+ }
+ $('export').onclick=()=>{try{
+  const saved=snapshot(),url=URL.createObjectURL(new Blob([saved.text],{type:'application/json'}));
+  const a=document.createElement('a');a.href=url;a.download=saved.name;document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url),60000);backedUpRaw=saved.raw;
+  message('保存操作を開始しました。ファイルが保存できたことを確認してください。保存できないときは共有またはテキスト保存を使ってください。');
+ }catch(e){message(storageMessage(e));}};
+ if($('share')){
+  $('share').hidden=!(typeof navigator.share==='function'&&typeof navigator.canShare==='function'&&typeof File==='function');
+  $('share').onclick=async()=>{try{
+   const saved=snapshot(),files=[new File([saved.text],saved.name,{type:'application/json'})];
+   if(!navigator.canShare({files}))throw Error('この画面ではJSONファイルを共有できません。通常の保存またはテキスト保存を使ってください。');
+   await navigator.share({files});backedUpRaw=saved.raw;
+   message('共有画面を閉じました。「ファイルに保存」などでJSONが保存できたことを確認してください。');
+  }catch(e){message(e.name==='AbortError'?'共有を中止しました。元の記録は変更していません。':storageMessage(e));}};
+ }
+ if($('show-text'))$('show-text').onclick=()=>{try{
+  textSnapshot=snapshot();$('backup-text').value=textSnapshot.text;$('text-backup').hidden=false;
+  $('backup-text').focus();$('backup-text').select();
+  message('下のテキスト全体を端末内のファイルなどへ保存してください。表示しただけでは退避完了になりません。チャットやお問い合わせには送らないでください。');
+ }catch(e){message(storageMessage(e));}};
+ if($('copy-text')){
+  $('copy-text').hidden=typeof navigator.clipboard?.writeText!=='function';
+  $('copy-text').onclick=async()=>{try{
+   if(!textSnapshot)fail();await navigator.clipboard.writeText(textSnapshot.text);
+   message('コピーしました。端末内のファイルなどへ貼り付けて保存し、保存内容を確認してください。');
+  }catch(e){message('コピーできませんでした。テキスト欄を長押し・全選択して、端末内のファイルなどへ保存してください。');}};
+ }
+ if($('text-saved'))$('text-saved').onclick=()=>{try{
+  if(!textSnapshot)fail();if(localStorage.getItem(KEY)!==textSnapshot.raw)throw Error('保存の表示後に記録が変わりました。もう一度テキストを表示して保存してください。');
+  backedUpRaw=textSnapshot.raw;message('テキストを保存したことを確認しました。復元する場合は内容を確認して進んでください。');
+ }catch(e){message(storageMessage(e));}};
+ if(new URLSearchParams(location.search).get('exportOnly')==='1'){
+  document.body.dataset.exportOnly='true';$('import-panel')?.remove();$('return-link')?.remove();
+ }
  if(document.body.dataset.exportOnly==='true')return;
- $('file').onchange=async e=>{pending=null;$('restore').disabled=true;try{
-  const file=e.target.files[0];if(!file)return;if(file.size>MAX)fail();const packet=JSON.parse(await file.text());fields(packet,['app','version','key','createdAt','data']);
-  if(packet.app!=='kuku-sodate'||packet.version!==1||packet.key!==KEY)fail();text(packet.createdAt);pending=validate(packet.data);
-  existing=localStorage.getItem(KEY);backedUp=false;$('ack').checked=false;
-  message(`読み込み確認：学習済み ${Object.values(pending.f).filter(f=>f.l>=0).length}問、${pending.coins}ポイント、育成 ${pending.pet.xp} XP。${existing===null?'このブラウザには既存記録がありません。':'既存記録があります。先に「記録を保存」で退避してください。'}`);$('restore').disabled=false;
- }catch(e){pending=null;message(e.message);}};
+ function inspect(contents){
+  if(bytes(contents)>MAX)fail();const packet=JSON.parse(contents);fields(packet,['app','version','key','createdAt','data']);
+  if(packet.app!=='kuku-sodate'||packet.version!==1||packet.key!==KEY)fail();text(packet.createdAt);
+  const checked=validate(packet.data),old=localStorage.getItem(KEY);
+  pending=checked;existing=old;backedUpRaw=null;$('ack').checked=false;
+  message(`読み込み確認：学習済み ${Object.values(pending.f).filter(f=>f.l>=0).length}問、${pending.coins}ポイント、育成 ${pending.pet.xp} XP。${existing===null?'この画面には既存記録がありません。':'既存記録があります。この画面の記録も先に保存してください。'}`);$('restore').disabled=false;
+ }
+ let inspection=0;
+ function reset(){pending=null;$('restore').disabled=true;return ++inspection;}
+ $('file').onchange=async e=>{const turn=reset();try{
+  const file=e.target.files[0];if(!file)return;if(file.size>MAX)fail();
+  const contents=typeof file.text==='function'?await file.text():await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(Error('ファイルを読み込めませんでした。'));reader.readAsText(file);});
+  if(turn===inspection)inspect(contents);
+ }catch(e){if(turn===inspection){pending=null;message(storageMessage(e));}}};
+ if($('import-text'))$('import-text').oninput=()=>{reset();message('テキストを変更しました。「テキストの内容を確認」を押してください。');};
+ if($('inspect-text'))$('inspect-text').onclick=()=>{reset();try{inspect($('import-text').value);}catch(e){message(storageMessage(e));}};
  $('restore').onclick=()=>{try{
   if(!pending)fail();if(!$('ack').checked)throw Error('内容と退避ファイルを確認してチェックしてください。');
-  if(localStorage.getItem(KEY)!==existing)throw Error('別の画面で記録が変わりました。ファイルを選び直してください。');
-  if(existing!==null&&!backedUp)throw Error('先に既存の記録をファイルへ保存してください。');
-  if(!confirm('このブラウザの九九の記録を、確認したファイルの内容に置き換えますか？'))return;
+  if(localStorage.getItem(KEY)!==existing)throw Error('別の画面で記録が変わりました。ファイルを選び直すかテキストを確認し直してください。');
+  if(existing!==null&&backedUpRaw!==existing)throw Error('先に既存の記録をファイルへ保存してください。');
+  if(!confirm('この画面の九九の記録を、確認したバックアップの内容に置き換えますか？'))return;
   localStorage.setItem(KEY,JSON.stringify(validate(pending)));pending=null;$('restore').disabled=true;
   message('復元しました。他の九九画面を閉じてから、アプリを開き直してください。旧サイトとの自動同期はありません。');
- }catch(e){message(e.name==='QuotaExceededError'?'保存容量が不足しています。既存の記録は変更していません。':e.message);}};
+ }catch(e){message(e.name==='QuotaExceededError'?'保存容量が不足しています。既存の記録は変更していません。':storageMessage(e));}};
 })();

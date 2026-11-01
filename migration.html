@@ -1,1 +1,21 @@
-<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="robots" content="noindex"><title>九九そだて 記録の保存と復元</title><style>body{font:17px/1.8 system-ui;max-width:680px;margin:40px auto;padding:20px;color:#234c3b}button,input{font:inherit;margin:12px 0}button{padding:12px}#message{white-space:pre-wrap;background:#eef5ef;padding:16px}</style></head><body><h1>九九そだて 記録の保存と復元</h1><p>旧サイトで使った端末とブラウザで記録を保存し、新サイトで同じファイルを復元します。記録は端末内で処理し、運営者へ送信しません。</p><p>他の九九画面を閉じて操作してください。ブログ内の九九も同じ保存領域を使う場合があります。移行後は新サイトで学習し、新旧を並行して更新しないでください。</p><button id="export">このブラウザの記録を保存</button><hr><label>復元するJSONファイル <input id="file" type="file" accept="application/json,.json"></label><p><label><input id="ack" type="checkbox">内容を確認し、既存記録がある場合は退避ファイルが保存できたことを確認しました</label></p><button id="restore" disabled>確認した記録で復元する</button><p id="message" role="status" aria-live="polite"></p><p><a href="./">九九そだてに戻る</a> · by FOREMIRA</p><script src="migration.js?v=2"></script></body></html>
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+<title>九九そだて 記録の保存と復元</title>
+<style>body{font:17px/1.8 system-ui;max-width:680px;margin:20px auto;padding:16px;color:#234c3b}button,input,textarea{font:inherit;max-width:100%;box-sizing:border-box}button{margin:8px 4px 8px 0;padding:12px}textarea{width:100%;height:170px}#message{white-space:pre-wrap;background:#eef5ef;padding:16px;position:relative}label{display:block}h1{font-size:1.8em}[hidden]{display:none!important}</style></head>
+<body><h1>九九そだて 記録の保存と復元</h1>
+<p>記録は端末内で処理し、運営者へ送信しません。以前使った端末・ブラウザ・プロファイル・起動方法ごとに保存してください。ホーム画面に追加した九九は、そのアイコンから起動して保存します。</p>
+<p>他の九九画面を閉じて操作してください。保存・共有を中止しても元の記録は削除しません。新旧サイトの自動同期はありません。</p>
+<h2>この画面の記録を保存</h2>
+<button id="export">このブラウザの記録を保存</button><button id="share" hidden>共有してファイルに保存</button><button id="show-text">保存できないとき：テキストを表示</button>
+<section id="text-backup" hidden><p>下の全体を端末内へ保存し、後で読み出せることを確認してください。共有先やクラウド同期先はご自身で確認してください。チャットやお問い合わせには送らないでください。</p>
+<label>記録のテキスト<textarea id="backup-text" readonly spellcheck="false" autocapitalize="off" autocomplete="off"></textarea></label>
+<button id="copy-text" hidden>テキストをコピー</button><button id="text-saved">テキストを保存できました</button></section>
+<p id="message" role="status" aria-live="polite"></p>
+<section id="import-panel"><hr><h2>保存した記録を復元</h2>
+<p>旧サイトで保存したJSONを、この画面に読み込みます。旧記録が見つからない場合は、以前使っていた九九を同じ方法で起動してください。<a href="https://gs5824878j-cyber.github.io/foremira-data-migration/kuku/" rel="noopener" target="_blank">通常の旧ブラウザ用の保存ページ</a>も利用できます。</p>
+<label>復元するJSONファイル <input id="file" type="file" accept="application/json,.json"></label>
+<details><summary>テキストで保存した場合</summary><label>保存したテキスト全体<textarea id="import-text" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea></label><button id="inspect-text">テキストの内容を確認</button></details>
+<p><label><input id="ack" type="checkbox">内容を確認し、既存記録がある場合は退避ファイルまたはテキストを保存できたことを確認しました</label></p>
+<button id="restore" disabled>確認した記録で復元する</button></section>
+<p id="return-link"><a href="./">九九そだてに戻る</a></p><p>by FOREMIRA</p><script src="migration.js?v=3"></script></body></html>
