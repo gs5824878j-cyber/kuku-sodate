@@ -35,7 +35,7 @@ class TransferTest(unittest.TestCase):
                 await context.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://127.0.0.1:') else r.abort())
                 page = await context.new_page()
                 await page.goto(source + '/', wait_until='networkidle')
-                raw = await page.evaluate("() => {S.coins=123;S.pet.xp=160;S.f['2x3'].l=2;save();return localStorage.getItem('kuku_preview_v5')}")
+                raw = await page.evaluate("() => {S.coins=123;S.pet.xp=160;S.pet.branch='balance';Object.assign(S.f['2x3'],{l:2,learnTestScore:9,learnedOn:'2026-10-31',pendingLearn:false});S.learnHistory={'2':{date:'2026-10-31',score:9,passed:true}};save();return localStorage.getItem('kuku_preview_v5')}")
                 await page.goto(source + '/migration.html')
                 with tempfile.TemporaryDirectory() as tmp:
                     async with page.expect_download() as event: await page.locator('#export').click()
