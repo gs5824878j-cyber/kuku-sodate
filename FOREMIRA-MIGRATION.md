@@ -1,6 +1,6 @@
 # FOREMIRA 移行準備
 
-作業ブランチ prepare/foremira。本番反映は未承認。mainへのpush・merge、DNS/Pages/Auth設定変更は行わない。
+作業ブランチ prepare/foremira。2026-11-01の利用者の切り替え指示に基づき、独立Vercelへ正式配置済み。XServerのkuku CNAME追加・新ドメインDNS/TLS確認待ち。旧GitHub Pagesは維持する。
 
 全体の試験・URL対応・バックアップ・未確認事項と切り替え手順は `/workspace/foremira-migration/README.md` を参照。
 
@@ -33,3 +33,11 @@ vercel.jsonは正式用で、ルートはインデックス可能、保存/復�
 このブランチの承認されたcommitから許可リストの静的ファイルとvercel.jsonだけを展開し、正式プロジェクトへ手動配置する。CLIの既存認証を利用し、認証情報をチャットに貼らない。VercelのGit自動デプロイは未連携のため、mainへのmergeだけでは正式Vercelへ反映されない。独自ドメイン接続後にそのプロジェクトのDNS推奨値を再取得し、XServerのkukuレコードだけを設定する。既存NS・メール関連・所有確認レコードを維持する。
 
 PC実記録の別origin復元とiPhone Safariでの共有→Files保存は利用者が確認。iPhoneでの復元、実ホーム画面版、Android実機は未確認のまま切り替え指示を受領。合成記録の自動試験と実機合格を区別して報告する。
+
+### 正式配置の記録（DNS追加前）
+
+配置commitは533771b01e4adff7698dd3693e5858433e482d3e、Production deploymentはdpl_AKAej4vfzRJ68TSnyhQoVGiLaMGn（READY）。13静的ファイル＋vercel.jsonの全14 SourceがSHA1一致。kuku.foremira.comはこのdeploymentへ接続済み、所有確認true、redirectなし。DNS/TLS利用可能の確認はまだ完了していない。
+
+実プロジェクトのrecommendedCNAME rank=1は e07dfa23e6c964f6.vercel-dns-017.com.。XServerでホストkuku・CNAME・TTL3600の1件だけ追加する。管理接続がないためこの登録は利用者操作。既存NS・メール関連・所有確認・blog/btsレコードは変更しない。新URL復元入口は https://kuku.foremira.com/migration.html 。旧URLは記録救出用に200で残し、自動転送しない。
+
+本番用設定で合成記録の旧→新origin復元、バランス型の学習起動、ポイント/育成/設定維持、CSP下の画面内保存、canonical/OG、root index可能・migration noindex/no-store、既存GA4の本番1回/Preview無効を確認。DNS前のHTTP Host指定確認は403で利用できず、新ドメインの実HTTPS配信検証はDNS追加後に行う。
