@@ -81,7 +81,7 @@
   if(!textSnapshot)fail();if(localStorage.getItem(KEY)!==textSnapshot.raw)throw Error('保存の表示後に記録が変わりました。もう一度テキストを表示して保存してください。');
   backedUpRaw=textSnapshot.raw;message('テキストを保存したことを確認しました。復元する場合は内容を確認して進んでください。');
  }catch(e){message(storageMessage(e));}};
- if(new URLSearchParams(location.search).get('exportOnly')==='1'){
+ if(location.hostname==='gs5824878j-cyber.github.io'||new URLSearchParams(location.search).get('exportOnly')==='1'){
   document.body.dataset.exportOnly='true';$('import-panel')?.remove();$('return-link')?.remove();
  }
  if(document.body.dataset.exportOnly==='true')return;
