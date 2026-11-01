@@ -1,6 +1,6 @@
 # FOREMIRA 移行準備
 
-作業ブランチ prepare/foremira。2026-11-01の利用者の切り替え指示に基づき、独立Vercelへ正式配置済み。XServerのkuku CNAME追加・新ドメインDNS/TLS確認待ち。旧GitHub Pagesは維持する。
+作業ブランチ prepare/foremira。2026-11-01の利用者の切り替え指示に基づき、独立Vercelへ正式配置し、新URLのDNS・HTTPS・公開資産・復元を確認済み。旧GitHub Pagesは記録救出用に維持する。
 
 全体の試験・URL対応・バックアップ・未確認事項と切り替え手順は `/workspace/foremira-migration/README.md` を参照。
 
@@ -41,3 +41,11 @@ PC実記録の別origin復元とiPhone Safariでの共有→Files保存は利用
 実プロジェクトのrecommendedCNAME rank=1は e07dfa23e6c964f6.vercel-dns-017.com.。XServerでホストkuku・CNAME・TTL3600の1件だけ追加する。管理接続がないためこの登録は利用者操作。既存NS・メール関連・所有確認・blog/btsレコードは変更しない。新URL復元入口は https://kuku.foremira.com/migration.html 。旧URLは記録救出用に200で残し、自動転送しない。
 
 本番用設定で合成記録の旧→新origin復元、バランス型の学習起動、ポイント/育成/設定維持、CSP下の画面内保存、canonical/OG、root index可能・migration noindex/no-store、既存GA4の本番1回/Preview無効を確認。DNS前のHTTP Host指定確認は403で利用できず、新ドメインの実HTTPS配信検証はDNS追加後に行う。
+
+## 公開後の最終確認（2026-11-01）
+
+https://kuku.foremira.com/ はHTTPS200。13公開資産が正式配置commit533771bと一致。HTTPから実308でHTTPSへ移り、query/hashを保持。実新ホストで合成記録の旧originからの保存→ファイル検査だけでは書込なし→確認後復元→学習・育成・設定保持と起動を確認。GA4既存IDのconfig1回は実送信を遮断して検証した。
+
+旧 /kuku-sodate/ とユーザーサイトの /foremira-data-migration/kuku/ は保存窓口として残す。旧GitHub PagesへのCNAMEは追加しない。新VercelはGitHubで管理した承認commitから手動配置しており、Git自動配置は未連携。mainは旧保存窓口のため、今回の公開Sourceはprepare/foremira/PR #2で管理する。この追記は文書だけで、公開ファイルの再配置は不要。
+
+公式 https://foremira.com/ も公開・HTTPSを確認済みで5サービスへ新URLでリンクする。テストバトンは利用者の方針により本番化時に移行し、今回は保留。Search Console、GA実受信、実iPhoneの新正式URLへの復元・実ホーム画面版/Androidは未確認。所有者がPCで保存した実JSONの確認サイトへの復元一致と、iPhone SafariのFiles保存報告は、自動試験と分けて記録する。
