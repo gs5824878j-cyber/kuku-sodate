@@ -24,7 +24,7 @@ class OldHostTest(unittest.TestCase):
                 await c.route('**/*',serve)
                 await c.add_init_script("""if(window.parent!==window){window.transferWrites=0;Storage.prototype.setItem=function(){window.transferWrites++;throw Error('no writes')};Storage.prototype.removeItem=function(){window.transferWrites++;throw Error('no removal')};Storage.prototype.clear=function(){window.transferWrites++;throw Error('no clearing')}}""")
                 page=await c.new_page();await page.goto(OLD,wait_until='networkidle')
-                raw=await page.evaluate("()=>{S.coins=137;S.pet.branch='balance';save();return localStorage.getItem('kuku_preview_v5')}")
+                raw=await page.evaluate("()=>{S.coins=137;S.pet.branch='balance';save();home();return localStorage.getItem('kuku_preview_v5')}")
                 await page.locator('#record-transfer-open').click()
                 f=page.frame_locator('#record-transfer-frame')
                 await f.locator('#show-text').click()
