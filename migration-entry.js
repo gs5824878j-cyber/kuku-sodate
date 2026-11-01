@@ -13,8 +13,15 @@
   else{dialog.setAttribute('open','');dialog.classList.add('transfer-fallback');dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');}
   document.getElementById('record-transfer-close').focus();
  });
- // Reload the app state after a restore instead of continuing with stale memory.
- const close=()=>location.reload();
+ const oldHost=location.hostname==='gs5824878j-cyber.github.io';
+ if(oldHost)document.getElementById('record-transfer-close').textContent='アプリに戻る';
+ // The old host is export-only: keep its running app and memory intact.
+ // A destination app can restore records, so reload that app before continuing.
+ const close=()=>{
+  if(!oldHost){location.reload();return;}
+  if(typeof dialog.close==='function')dialog.close();else dialog.removeAttribute('open');
+  dialog.classList.remove('transfer-fallback');frame.src='about:blank';open.focus();
+ };
  document.getElementById('record-transfer-close').addEventListener('click',close);
  dialog.addEventListener('cancel',event=>{event.preventDefault();close();});
 })();
