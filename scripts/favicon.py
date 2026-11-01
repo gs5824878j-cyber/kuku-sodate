@@ -1,7 +1,7 @@
 """Install the hostname favicon in complete HTML documents only."""
 import re
 from pathlib import Path
-LINKS = '<link rel="icon" href="/ai-blog/favicon.ico" sizes="16x16 32x32 48x48" type="image/x-icon">\n<link rel="icon" href="/ai-blog/favicon-32x32.png" sizes="32x32" type="image/png">\n<link rel="icon" href="/ai-blog/favicon-192x192.png" sizes="192x192" type="image/png">\n<link rel="apple-touch-icon" href="/ai-blog/apple-touch-icon.png" sizes="180x180">'
+LINKS = '<link rel="icon" href="./favicon.ico" sizes="16x16 32x32 48x48" type="image/x-icon">\n<link rel="icon" href="./favicon-32x32.png" sizes="32x32" type="image/png">\n<link rel="icon" href="./favicon-192x192.png" sizes="192x192" type="image/png">\n<link rel="apple-touch-icon" href="./apple-touch-icon.png" sizes="180x180">'
 def apply(html):
     match = re.search(r'<head\b[^>]*>.*?</head>', html, re.I | re.S)
     if not match:
