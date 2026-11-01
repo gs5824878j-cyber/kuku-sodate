@@ -3,6 +3,8 @@ const INT=[600000,86400000,259200000,604800000,1209600000,2592000000,5184000000]
 const ITEMS={food:{n:'ごはん',e:'🍙',xp:3,c:'food'},toy:{n:'おもちゃ',e:'🪀',xp:4,c:'play'},book:{n:'えほん',e:'📕',xp:5,c:'study'},gem:{n:'キラキラ',e:'💎',xp:8,c:null}};
 const ST=[{m:0,n:'たまご'},{m:30,n:'あかちゃん'},{m:90,n:'こども'},{m:180,n:'せいちょう'},{m:320,n:'おとな'}];
 const RO={study:{n:'学習型',c1:'#7eb5e3',c2:'#4f83b5',mark:'📘'},play:{n:'元気型',c1:'#ffc06c',c2:'#df7c2f',mark:'⚡'},food:{n:'のんびり型',c1:'#98cf88',c2:'#5f9c58',mark:'🌱'}};
+// Available before the initial render of an existing balanced pet.
+RO.balance={n:'バランス型',c1:'#c6ace8',c2:'#8a68b2',mark:'🌟'};
 const SPECIES={human:{n:'人間',icon:'🧒',base:'ミライ'},dino:{n:'恐竜',icon:'🦖',base:'ガオ'},animal:{n:'動物',icon:'🐾',base:'ポコ'}};
 let mem={};
 function get(k){try{return localStorage.getItem(k)}catch(e){return mem[k]||null}}
@@ -285,7 +287,6 @@ for(let [id,fn] of[['learna',submitLearn],['reviewa',submitReview],['challengea'
     return `${y}-${m}-${dd}`;
   };
 
-  RO.balance={n:'バランス型',c1:'#c6ace8',c2:'#8a68b2',mark:'🌟'};
 
   function migrateEconomy(){
     if(S.economyVersion===ECON_VERSION) return;
